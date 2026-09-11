@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StreakForge
 
-## Getting Started
+A daily habit tracker with GitHub-style contribution heatmaps and streak
+counters. Client-only prototype — all data lives in the browser's
+`localStorage`; nothing is sent to a server.
 
-First, run the development server:
+## Features
+
+- Create habits with a name and color
+- One-tap "mark done today" toggle, undoable
+- Current streak and longest streak, computed from the raw log dates
+- An 18-week contribution heatmap per habit
+- Persists across reloads via `localStorage`
+
+## Concepts demonstrated
+
+| Area | Where |
+|---|---|
+| Pure date/streak logic, fully unit tested | `src/lib/dates.ts`, `src/lib/streaks.ts` |
+| Streak semantics (a streak stays alive until a full day is skipped, not just until midnight) | `currentStreak` in `src/lib/streaks.ts` |
+| Calendar-grid generation (week-aligned columns, out-of-range padding) | `buildHeatmap` in `src/lib/streaks.ts` |
+| SSR-safe localStorage hydration (avoiding hydration mismatches) | `src/app/page.tsx` |
+| Next.js 16 App Router + Tailwind v4 | `src/app/` |
+| Vitest + Testing Library setup | `vitest.config.mts`, `src/lib/__tests__/` |
+| CI (lint, test, build on every push) | `.github/workflows/ci.yml` |
+
+## Stack
+
+Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · Tailwind CSS v4 · Vitest
+
+## Running locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm test         # unit tests
+npm run lint
+npm run build    # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Limitations / roadmap
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This is a **prototype**: single-device, single-user, no accounts. There's no
+backend yet, so habits don't sync across devices or browsers. A natural next
+step would be swapping the `src/lib/storage.ts` localStorage layer for a
+Supabase-backed API with real auth, without touching the pure streak/heatmap
+logic at all — that logic is already storage-agnostic.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
